@@ -26,7 +26,7 @@ def apply_coupons (cart, coupons)
 
   new_hash = {}
   for i in no_coupon_items
-    new_hash[i] = cart["BREAD"]
+    new_hash[i] = cart[i]
   end
   
   for i in 0..coupons.length-1
