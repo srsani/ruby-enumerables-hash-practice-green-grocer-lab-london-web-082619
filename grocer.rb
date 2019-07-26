@@ -34,10 +34,10 @@ def apply_coupons (cart, coupons)
     coupons_price = coupons[i][:cost]
     item = coupons[i][:item]
     if cart[item][:count]  >= coupons_logic
-      new_hash[item+" W/COUPON"] = {:price => coupons_price/coupons_logic, :clearance => cart[item][:clearance],  :count => coupons_logic}
+      new_hash[item+" W/COUPON"] = {:price => (coupons_price/coupons_logic).round(2), :clearance => cart[item][:clearance],  :count => coupons_logic}
       remain = cart[item][:count]  - coupons_logic 
       while remain >= coupons_logic
-        new_hash[item+" W/COUPON"] = {:price => coupons_price/coupons_logic, :clearance => cart[item][:clearance],  :count => new_hash[item+" W/COUPON"][:count ]+coupons_logic}
+        new_hash[item+" W/COUPON"] = {:price => (coupons_price/coupons_logic).round(2), :clearance => cart[item][:clearance],  :count => new_hash[item+" W/COUPON"][:count ]+coupons_logic}
         remain = remain  - coupons_logic 
       end
     end
