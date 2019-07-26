@@ -41,7 +41,7 @@ def apply_coupons (cart, coupons)
         remain = remain  - coupons_logic 
       end
     end
-    if remain>=1
+    if remain>=0
       new_hash[item] = {:price =>cart[item][:price] , :clearance => cart[item][:clearance],  :count => remain}
     end
   end
