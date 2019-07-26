@@ -12,49 +12,38 @@ end
 def apply_coupons (cart, coupons)
   coupons_items = []
   coupons.each {|h| coupons_items.append(h[:item])}
+  
   card_items = []
   cart.each {|k,j| card_items.append(k)}
+  
+  no_coupon_items = card_items - coupons_items 
+  
+  coupon_items = coupons_items & card_items
   
   if coupons_items & card_items == []
     return cart
   end
-  
-  if coupons.length == 0
-    return cart
-  else
-    new_hash = {}
-    for i,j in cart
-#       p i
-#       p j 
-      relevent_coupons = coupons.each do |h| 
-        if h[:item] == i
 
-          coupons_logic = h[:num]
-          coupons_price = h[:cost]
-#           p coupons_logic
-#           p coupons_price
-#           p j[:count]
-            if j[:count]  >= coupons_logic
-              new_hash[i+" W/COUPON"] = {:price => coupons_price/coupons_logic, :clearance => j[:clearance],  :count => coupons_logic}
-              remain = j[:count]   - coupons_logic 
-              while remain >= coupons_logic
-                new_hash[i+" W/COUPON"] = {:price => coupons_price/coupons_logic, :clearance => j[:clearance],  :count => new_hash[i+" W/COUPON"][:count ]+coupons_logic}
-                remain = remain  - coupons_logic 
-#                p new_hash
-#               p "_________"
-              end
-              if remain>=0
-                  new_hash[i] = {:price =>j[:price] , :clearance => j[:clearance],  :count => remain}
-#               p new_hash
-#               p "_________"
-#               p "_________"
-              end
-          elsif h[:item] != i
-            new_hash[i] = {:price =>j[:price] , :clearance => j[:clearance],  :count => j[:count]}
-        end
-        end
-      end 
+  new_hash = {}
+  for i in no_coupon_items
+    new_hash[i] = cart["BREAD"]
+  end
+  
+  for i in 0..coupons.length-1
+    coupons_logic = coupons[i][:num]
+    coupons_price = coupons[i][:cost]
+    item = coupons[i][:item]
+    if cart[item][:count]  >= coupons_logic
+      new_hash[item+" W/COUPON"] = {:price => coupons_price/coupons_logic, :clearance => cart[item][:clearance],  :count => coupons_logic}
+      remain = cart[item][:count]  - coupons_logic 
+      while remain >= coupons_logic
+        new_hash[item+" W/COUPON"] = {:price => coupons_price/coupons_logic, :clearance => cart[item][:clearance],  :count => new_hash[item+" W/COUPON"][:count ]+coupons_logic}
+        remain = remain  - coupons_logic 
       end
+    end
+    if remain>=1
+      new_hash[item] = {:price =>cart[item][:price] , :clearance => cart[item][:clearance],  :count => remain}
+    end
   end
   return new_hash
 end
